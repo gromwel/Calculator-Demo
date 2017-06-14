@@ -162,6 +162,17 @@ NSString* const ButtonACDidChangeNotification = @"ButtonACDidChangeNotification"
 }
 
 
+//анимация текста
+- (void) animationLabelText : (NSString *) stringShanges {
+    
+    CATransition * transition = [CATransition animation];
+    transition.type = kCATransitionFade;
+    transition.duration = 0.1f;
+    [self.labelCalculator.layer addAnimation:transition forKey:nil];
+    self.labelCalculator.text = stringShanges;
+    
+}
+
 
 #pragma mark - Numbers Button
 
@@ -195,31 +206,31 @@ NSString* const ButtonACDidChangeNotification = @"ButtonACDidChangeNotification"
     
     //если флаг новое значение то обнуляем лейбл и меняем флаг
     if (self.isNewValue) {
-        self.labelCalculator.text = @"0";
+        [self animationLabelText:@"0"];
         self.isNewValue = NO;
     }
     
     //если добавляем запятую и значение в поле равно нулю
     if ([symbol isEqualToString:@","] & [self.labelCalculator.text isEqualToString:@"0"]) {
-        self.labelCalculator.text =
-        [NSString stringWithFormat:@"%@%@",self.labelCalculator.text, symbol];
+        [self animationLabelText:
+         [NSString stringWithFormat:@"%@%@",self.labelCalculator.text, symbol]];
         
         
         //если значение в поле равно нулю удаляем ноль и ставим цифру
     } else if ([self.labelCalculator.text isEqualToString:@"0"]) {
-        self.labelCalculator.text =
-        [self.labelCalculator.text substringToIndex:self.labelCalculator.text.length-1];
+        [self animationLabelText:
+         [self.labelCalculator.text substringToIndex:self.labelCalculator.text.length-1]];
         
-        self.labelCalculator.text =
-        [NSString stringWithFormat:@"%@%@",self.labelCalculator.text, symbol];
+        [self animationLabelText:
+         [NSString stringWithFormat:@"%@%@",self.labelCalculator.text, symbol]];
         
         
         //если добавляем любую цифру когда уже значене не 0 просто добовляем символ
     } else {
         
-        //считываем значение, добавляем значени, парсим, форматируем для лейбла
-        self.labelCalculator.text = [self parsingValueToString: [self parsingStringToValue:
-                                                                 [NSString stringWithFormat:@"%@%@",self.labelCalculator.text, symbol]]];
+        [self animationLabelText:
+         [self parsingValueToString: [self parsingStringToValue:
+                                      [NSString stringWithFormat:@"%@%@",self.labelCalculator.text, symbol]]]];
     }
     
     
@@ -295,7 +306,7 @@ NSString* const ButtonACDidChangeNotification = @"ButtonACDidChangeNotification"
 
 //сбрасываем покаания на экране
 - (void) resetLabel {
-    self.labelCalculator.text = @"0";
+    [self animationLabelText:@"0"];
     self.isNewValue = YES;
 }
 
@@ -311,7 +322,7 @@ NSString* const ButtonACDidChangeNotification = @"ButtonACDidChangeNotification"
 
 //сбрасываем все
 - (void) resetAll {
-    self.labelCalculator.text = @"0";
+    [self animationLabelText:@"0"];
     self.firstValue = 0.f;
     self.secondValue = 0.f;
     self.resultValue = 0.f;
@@ -336,7 +347,7 @@ NSString* const ButtonACDidChangeNotification = @"ButtonACDidChangeNotification"
     //выводим результат
     NSMutableString * string = [NSMutableString stringWithFormat:@"%f", self.resultValue];
     [self deleteZero: string];
-    self.labelCalculator.text = [self parsingValueToString:string];
+    [self animationLabelText:[self parsingValueToString:string]];
     
 }
 
@@ -376,7 +387,7 @@ NSString* const ButtonACDidChangeNotification = @"ButtonACDidChangeNotification"
         NSMutableString * string = [NSMutableString stringWithString: [self parsingStringToValue:self.labelCalculator.text]];
         [string deleteCharactersInRange:NSMakeRange(string.length - 1, 1)];
         [string setString:[self parsingValueToString:string]];
-        self.labelCalculator.text = string;
+        [self animationLabelText:string];
         
         }
             
@@ -454,7 +465,7 @@ NSString* const ButtonACDidChangeNotification = @"ButtonACDidChangeNotification"
     
     NSMutableString * string = [NSMutableString stringWithFormat:@"%f", resultValue];
     [self deleteZero: string];
-    self.labelCalculator.text = [self parsingValueToString: string];
+    [self animationLabelText:[self parsingValueToString: string]];
     
     
     
@@ -475,7 +486,7 @@ NSString* const ButtonACDidChangeNotification = @"ButtonACDidChangeNotification"
     
     NSMutableString * string = [NSMutableString stringWithFormat:@"%f", percent];
     [self deleteZero : string];
-    self.labelCalculator.text = [self parsingValueToString: string];
+    [self animationLabelText:[self parsingValueToString: string]];
 }
 
 
@@ -565,7 +576,7 @@ NSString* const ButtonACDidChangeNotification = @"ButtonACDidChangeNotification"
     } else if (![self.labelCalculator.text isEqualToString:@"0"]) {
         NSMutableString * string = [NSMutableString stringWithString: [self parsingStringToValue: self.labelCalculator.text]];
         [self deleteZero:string];
-        self.labelCalculator.text = [self parsingValueToString: string];
+        [self animationLabelText:[self parsingValueToString: string]];
         
     }
     
@@ -731,13 +742,11 @@ NSString* const ButtonACDidChangeNotification = @"ButtonACDidChangeNotification"
         backgroundColor = [self colorWithR:234 G:232 B:235];
         //option = UIViewAnimationOptionCurveEaseInOut;
         
-        
         //остальные
     } else {
         backgroundColor = [self colorWithR:219 G:217 B:220];
         
     }
-    
     
     [UIView animateWithDuration:1.f
                           delay:0.f
@@ -763,24 +772,16 @@ NSString* const ButtonACDidChangeNotification = @"ButtonACDidChangeNotification"
     if (sender.tag <= 100) {
         backgroundColor = [self colorWithR:51 G:51 B:51];
         
-        
-        
         //операции
     } else if (sender.tag >= 200) {
         backgroundColor = [self colorWithR:246 G:145 B:4];
         //option = UIViewAnimationOptionCurveEaseInOut ;
-        
-        
-        
         
         //остальные
     } else {
         backgroundColor = [self colorWithR:166 G:166 B:166];
         
     }
-    
-    
-    
     
     [UIView animateWithDuration:1.f
                           delay:0.f
@@ -790,9 +791,6 @@ NSString* const ButtonACDidChangeNotification = @"ButtonACDidChangeNotification"
                      }
                      completion:^(BOOL finished) {
                      }];
-    
-    
-    
 }
 
 

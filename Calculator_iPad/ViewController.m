@@ -45,6 +45,7 @@ NSString* const ButtonACDidChangeNotification = @"ButtonACDidChangeNotification"
 
 
 - (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     
     //обнулили свойства
     self.isNewValue = YES;
@@ -341,21 +342,24 @@ NSString* const ButtonACDidChangeNotification = @"ButtonACDidChangeNotification"
 //считываем число и оператор
 - (void) calculation {
     
-    //считаем и записываем результат
-    self.resultValue = [self calculationResult];
-    
-    //выводим результат
-    NSMutableString * string = [NSMutableString stringWithFormat:@"%f", self.resultValue];
-    [self deleteZero: string];
-    [self animationLabelText:[self parsingValueToString:string]];
-    
+    if (!([self calculationResult] == NSNotFound)) {
+        
+        //считаем и записываем результат
+        self.resultValue = [self calculationResult];
+        
+        //выводим результат
+        NSMutableString * string = [NSMutableString stringWithFormat:@"%f", self.resultValue];
+        [self deleteZero: string];
+        [self animationLabelText:[self parsingValueToString:string]];
+        
+    }
 }
 
 
 //просчитываем результат
 - (double) calculationResult {
     
-    double result;
+    double result = NSNotFound;
     
     //проверяем какая операция будет выполнена и выполняем
     if (self.operation == 202) {
@@ -730,7 +734,7 @@ NSString* const ButtonACDidChangeNotification = @"ButtonACDidChangeNotification"
 //анимация когда нажимаем
 - (void) animatedBackgroundColorDown : (UIButton *)sender {
     
-    UIColor * backgroundColor = [[UIColor alloc] init];
+    UIColor * backgroundColor = [self colorWithR:219 G:217 B:220];
     UIViewAnimationOptions option = UIViewAnimationOptionAllowUserInteraction;
     
     //цифры
@@ -741,11 +745,6 @@ NSString* const ButtonACDidChangeNotification = @"ButtonACDidChangeNotification"
     } else if (sender.tag >= 200) {
         backgroundColor = [self colorWithR:234 G:232 B:235];
         //option = UIViewAnimationOptionCurveEaseInOut;
-        
-        //остальные
-    } else {
-        backgroundColor = [self colorWithR:219 G:217 B:220];
-        
     }
     
     [UIView animateWithDuration:1.f
@@ -765,7 +764,7 @@ NSString* const ButtonACDidChangeNotification = @"ButtonACDidChangeNotification"
 //анимация когда отпускаем
 - (void) animatedBackgroundColorUp : (UIButton *)sender {
     
-    UIColor * backgroundColor = [[UIColor alloc] init];
+    UIColor * backgroundColor = [self colorWithR:166 G:166 B:166];
     UIViewAnimationOptions option = UIViewAnimationOptionAllowUserInteraction;
     
     //цифры
@@ -776,10 +775,6 @@ NSString* const ButtonACDidChangeNotification = @"ButtonACDidChangeNotification"
     } else if (sender.tag >= 200) {
         backgroundColor = [self colorWithR:246 G:145 B:4];
         //option = UIViewAnimationOptionCurveEaseInOut ;
-        
-        //остальные
-    } else {
-        backgroundColor = [self colorWithR:166 G:166 B:166];
         
     }
     
